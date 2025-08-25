@@ -3,8 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced PBPK Modeling & Pharmacology Quiz</title>
+    <title>The InQUIZitive MIDDler: Regulatory Chronicles</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap');
+        
         * {
             margin: 0;
             padding: 0;
@@ -12,412 +14,630 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
             line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #e2e8f0;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
             min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            background-image: 
+                radial-gradient(2px 2px at 20px 30px, #fff, transparent),
+                radial-gradient(2px 2px at 40px 70px, #fff, transparent),
+                radial-gradient(1px 1px at 90px 40px, #fff, transparent),
+                radial-gradient(1px 1px at 130px 80px, #fff, transparent),
+                radial-gradient(2px 2px at 160px 30px, #fff, transparent);
+            background-repeat: repeat;
+            background-size: 200px 100px;
+            animation: sparkle 3s linear infinite;
+            opacity: 0.6;
+        }
+
+        @keyframes sparkle {
+            0% { transform: translateY(0px); }
+            100% { transform: translateY(-100px); }
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
 
-        .quiz-header {
-            background: rgba(255, 255, 255, 0.95);
+        .game-header {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,60,0.9));
             padding: 30px;
             border-radius: 20px;
             text-align: center;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            backdrop-filter: blur(10px);
+            margin-bottom: 25px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            border: 2px solid #4fd1c7;
+            position: relative;
+            overflow: hidden;
         }
 
-        .quiz-header h1 {
-            color: #4a5568;
+        .game-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 209, 199, 0.1), transparent);
+            animation: scan 3s ease-in-out infinite;
+        }
+
+        @keyframes scan {
+            0% { left: -100%; }
+            50% { left: 100%; }
+            100% { left: 100%; }
+        }
+
+        .game-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 3em;
+            font-weight: 900;
+            background: linear-gradient(45deg, #4fd1c7, #06b6d4, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
             margin-bottom: 10px;
-            font-size: 2.2em;
-        }
-
-        .quiz-header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
-        .setup-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
-        }
-
-        .setup-section {
-            margin-bottom: 30px;
-        }
-
-        .setup-section h3 {
-            color: #2d3748;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
-
-        .topics-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .topic-card {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            padding: 15px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            text-shadow: 0 0 30px rgba(79, 209, 199, 0.3);
             position: relative;
         }
 
-        .topic-card:hover {
-            border-color: #667eea;
-            background: #edf2f7;
-            transform: translateY(-2px);
+        .game-subtitle {
+            font-size: 1.3em;
+            color: #94a3b8;
+            font-weight: 400;
+            letter-spacing: 1px;
         }
 
-        .topic-card.selected {
-            border-color: #667eea;
-            background: #e6fffa;
-        }
-
-        .topic-title {
-            font-weight: 600;
-            color: #2d3748;
-            margin-bottom: 5px;
-        }
-
-        .topic-description {
-            font-size: 0.9em;
-            color: #4a5568;
-            line-height: 1.4;
-        }
-
-        .topic-count {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: #667eea;
-            color: white;
-            border-radius: 12px;
-            padding: 2px 8px;
-            font-size: 0.8em;
-            font-weight: 600;
-        }
-
-        .question-count-section {
-            display: flex;
-            align-items: center;
+        .player-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 20px;
-            flex-wrap: wrap;
+            margin-bottom: 25px;
         }
 
-        .question-count-section label {
+        .stat-card {
+            background: linear-gradient(135deg, rgba(0,0,0,0.6), rgba(30,30,60,0.6));
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #374151;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #4fd1c7, #06b6d4);
+        }
+
+        .stat-label {
+            color: #9ca3af;
+            font-size: 0.9em;
             font-weight: 600;
-            color: #2d3748;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
         }
 
-        .question-count-controls {
+        .stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.5em;
+            font-weight: 700;
+            color: #4fd1c7;
+        }
+
+        .stat-bar {
+            width: 100%;
+            height: 6px;
+            background: #374151;
+            border-radius: 3px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981);
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .mission-setup {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30,30,60,0.8));
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            border: 1px solid #4338ca;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+        }
+
+        .mission-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8em;
+            color: #8b5cf6;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .difficulty-selection {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .difficulty-card {
+            background: linear-gradient(135deg, rgba(0,0,0,0.7), rgba(50,50,80,0.7));
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .difficulty-card:hover {
+            border-color: #4fd1c7;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(79, 209, 199, 0.2);
+        }
+
+        .difficulty-card.selected {
+            border-color: #4fd1c7;
+            background: linear-gradient(135deg, rgba(79, 209, 199, 0.1), rgba(139, 92, 246, 0.1));
+        }
+
+        .difficulty-header {
             display: flex;
             align-items: center;
-            gap: 10px;
+            margin-bottom: 12px;
         }
 
-        .count-input {
-            width: 80px;
-            padding: 8px;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
+        .difficulty-icon {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        .difficulty-name {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.2em;
+        }
+
+        .difficulty-description {
+            color: #94a3b8;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        .difficulty-rewards {
+            font-size: 0.85em;
+            color: #fbbf24;
+        }
+
+        .mission-length {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .length-option {
+            background: rgba(0,0,0,0.6);
+            padding: 15px 25px;
+            border-radius: 10px;
+            border: 1px solid #374151;
+            cursor: pointer;
+            transition: all 0.3s ease;
             text-align: center;
-            font-size: 1em;
         }
 
-        .count-btn {
-            background: #667eea;
+        .length-option:hover, .length-option.selected {
+            border-color: #8b5cf6;
+            background: rgba(139, 92, 246, 0.1);
+        }
+
+        .launch-mission {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
             color: white;
             border: none;
-            width: 30px;
-            height: 30px;
-            border-radius: 6px;
+            border-radius: 12px;
+            font-family: 'Orbitron', monospace;
+            font-size: 1.2em;
+            font-weight: 700;
             cursor: pointer;
-            font-weight: 600;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .count-btn:hover {
-            background: #5a67d8;
+        .launch-mission:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
         }
 
-        .progress-container {
-            background: rgba(255, 255, 255, 0.9);
-            padding: 15px;
+        .launch-mission:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .launch-mission::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .launch-mission:hover::before {
+            left: 100%;
+        }
+
+        .game-progress {
+            background: rgba(0,0,0,0.8);
+            padding: 20px;
             border-radius: 15px;
             margin-bottom: 20px;
-            backdrop-filter: blur(10px);
+            border: 1px solid #374151;
+        }
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .mission-info {
+            font-family: 'Orbitron', monospace;
+            color: #4fd1c7;
+            font-weight: 600;
         }
 
         .progress-bar {
             width: 100%;
-            height: 10px;
-            background-color: #e2e8f0;
-            border-radius: 5px;
+            height: 8px;
+            background: #374151;
+            border-radius: 4px;
             overflow: hidden;
         }
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #48bb78, #38a169);
-            transition: width 0.3s ease;
-            border-radius: 5px;
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4, #10b981);
+            border-radius: 4px;
+            transition: width 0.5s ease;
         }
 
-        .progress-text {
-            text-align: center;
-            margin-top: 10px;
-            font-weight: 600;
-            color: #4a5568;
-        }
-
-        .question-container {
-            background: rgba(255, 255, 255, 0.95);
-            padding: 30px;
+        .scenario-container {
+            background: linear-gradient(135deg, rgba(0,0,0,0.9), rgba(30,30,60,0.9));
+            padding: 40px;
             border-radius: 20px;
             margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(10px);
+            border: 1px solid #4338ca;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+            position: relative;
+            overflow: hidden;
         }
 
-        .question-header {
+        .scenario-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981, #06b6d4, #8b5cf6);
+        }
+
+        .scenario-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        .question-number {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .scenario-badge {
+            font-family: 'Orbitron', monospace;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
             padding: 8px 16px;
-            border-radius: 20px;
-            font-weight: 600;
-        }
-
-        .topic-badge {
-            background: #e6fffa;
-            color: #234e52;
-            padding: 4px 12px;
-            border-radius: 12px;
+            border-radius: 15px;
+            font-weight: 700;
             font-size: 0.9em;
-            border: 1px solid #b2f5ea;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .question-text {
-            font-size: 1.2em;
-            color: #2d3748;
+        .risk-indicator {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.9em;
+            color: #fbbf24;
+        }
+
+        .story-context {
+            background: rgba(139, 92, 246, 0.1);
+            border-left: 4px solid #8b5cf6;
+            padding: 20px;
             margin-bottom: 25px;
+            border-radius: 0 10px 10px 0;
+            font-style: italic;
+            color: #c7d2fe;
+        }
+
+        .research-challenge {
+            font-size: 1.3em;
+            color: #e2e8f0;
+            margin-bottom: 30px;
             font-weight: 500;
-            line-height: 1.7;
+            line-height: 1.6;
         }
 
-        .options-container {
-            margin-bottom: 25px;
+        .decision-options {
+            margin-bottom: 30px;
         }
 
-        .option {
-            background: #f7fafc;
-            border: 2px solid #e2e8f0;
-            padding: 15px 20px;
-            margin-bottom: 10px;
+        .decision-option {
+            background: rgba(0,0,0,0.6);
+            border: 2px solid #374151;
+            padding: 25px;
+            margin-bottom: 15px;
             border-radius: 12px;
             cursor: pointer;
             transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .decision-option::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(79, 209, 199, 0.1), transparent);
+            transition: left 0.3s;
+        }
+
+        .decision-option:hover::before {
+            left: 100%;
+        }
+
+        .decision-option:hover {
+            border-color: #4fd1c7;
+            transform: translateX(10px);
+        }
+
+        .decision-option.selected {
+            border-color: #4fd1c7;
+            background: rgba(79, 209, 199, 0.1);
+        }
+
+        .decision-option.correct {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .decision-option.incorrect {
+            border-color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        .option-header {
             display: flex;
             align-items: center;
-        }
-
-        .option:hover {
-            border-color: #667eea;
-            background: #edf2f7;
-            transform: translateX(5px);
-        }
-
-        .option.selected {
-            border-color: #667eea;
-            background: #e6fffa;
-        }
-
-        .option.correct {
-            border-color: #48bb78;
-            background: #f0fff4;
-            color: #22543d;
-        }
-
-        .option.incorrect {
-            border-color: #f56565;
-            background: #fed7d7;
-            color: #742a2a;
+            margin-bottom: 10px;
         }
 
         .option-letter {
-            background: #667eea;
-            color: white;
-            width: 30px;
-            height: 30px;
+            background: linear-gradient(135deg, #4fd1c7, #06b6d4);
+            color: #0f172a;
+            width: 35px;
+            height: 35px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             margin-right: 15px;
-            font-weight: 600;
-            flex-shrink: 0;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
         }
 
-        .option.correct .option-letter {
-            background: #48bb78;
+        .decision-option.correct .option-letter {
+            background: linear-gradient(135deg, #10b981, #059669);
         }
 
-        .option.incorrect .option-letter {
-            background: #f56565;
-        }
-
-        .explanation {
-            background: #edf2f7;
-            padding: 20px;
-            border-radius: 12px;
-            margin-top: 20px;
-            border-left: 4px solid #667eea;
-        }
-
-        .explanation h4 {
-            color: #2d3748;
-            margin-bottom: 10px;
-        }
-
-        .explanation p {
-            color: #4a5568;
-            line-height: 1.6;
-        }
-
-        .nav-buttons {
-            display: flex;
-            justify-content: space-between;
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .btn {
-            padding: 12px 30px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 1em;
-            transition: all 0.3s ease;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .decision-option.incorrect .option-letter {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
             color: white;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        .consequence-analysis {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(30,30,60,0.8));
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 25px;
+            border-left: 4px solid #4fd1c7;
+            position: relative;
+        }
+
+        .consequence-analysis::before {
+            content: "📊";
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 1.8em;
+        }
+
+        .analysis-title {
+            font-family: 'Orbitron', monospace;
+            color: #4fd1c7;
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .impact-summary {
+            background: rgba(79, 209, 199, 0.1);
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border-left: 3px solid #4fd1c7;
+        }
+
+        .mission-controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .control-btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 25px;
+            font-family: 'Rajdhani', sans-serif;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .control-btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: white;
         }
 
         .btn-secondary {
-            background: #e2e8f0;
-            color: #4a5568;
+            background: rgba(0,0,0,0.6);
+            color: #94a3b8;
+            border: 1px solid #374151;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
         }
 
         .btn-secondary:hover {
-            background: #cbd5e0;
-            transform: translateY(-2px);
+            background: rgba(30,30,60,0.8);
+            border-color: #4fd1c7;
+            color: #e2e8f0;
         }
 
-        .btn:disabled {
+        .control-btn:disabled {
             opacity: 0.5;
             cursor: not-allowed;
             transform: none !important;
         }
 
-        .results-container {
+        .mission-results {
             text-align: center;
-            padding: 40px;
+            padding: 50px 40px;
         }
 
-        .score-display {
-            font-size: 3em;
-            font-weight: 700;
-            background: linear-gradient(135deg, #667eea, #764ba2);
+        .final-score {
+            font-family: 'Orbitron', monospace;
+            font-size: 4em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #4fd1c7, #8b5cf6);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 20px;
         }
 
-        .score-message {
-            font-size: 1.3em;
-            color: #4a5568;
-            margin-bottom: 30px;
-        }
-
-        .performance-breakdown {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            margin-top: 30px;
-        }
-
-        .performance-item {
-            background: #f7fafc;
-            padding: 20px;
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
-        }
-
-        .performance-label {
-            color: #4a5568;
-            font-weight: 600;
-            margin-bottom: 5px;
-        }
-
-        .performance-value {
+        .mission-outcome {
             font-size: 1.5em;
+            color: #94a3b8;
+            margin-bottom: 30px;
+            font-weight: 500;
+        }
+
+        .achievements {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .achievement-card {
+            background: rgba(0,0,0,0.7);
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #374151;
+            transition: all 0.3s ease;
+        }
+
+        .achievement-card.unlocked {
+            border-color: #10b981;
+            background: rgba(16, 185, 129, 0.1);
+        }
+
+        .achievement-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .achievement-icon {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .achievement-name {
+            font-family: 'Orbitron', monospace;
             font-weight: 700;
-            color: #2d3748;
-        }
-
-        .topic-performance {
-            margin-top: 30px;
-            text-align: left;
-        }
-
-        .topic-performance h4 {
-            color: #2d3748;
-            margin-bottom: 15px;
-        }
-
-        .topic-score {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            background: #f7fafc;
-            padding: 10px 15px;
-            border-radius: 8px;
             margin-bottom: 8px;
+        }
+
+        .achievement-desc {
+            color: #9ca3af;
+            font-size: 0.9em;
         }
 
         .hidden {
@@ -426,785 +646,709 @@
 
         @media (max-width: 768px) {
             .container {
-                padding: 10px;
+                padding: 15px;
             }
             
-            .question-container, .setup-container {
-                padding: 20px;
-            }
-            
-            .nav-buttons {
-                flex-direction: column;
-            }
-            
-            .btn {
-                width: 100%;
-            }
-            
-            .topics-grid {
+            .difficulty-selection {
                 grid-template-columns: 1fr;
             }
             
-            .question-count-section {
+            .mission-length {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
+            }
+            
+            .mission-controls {
+                flex-direction: column;
+            }
+            
+            .achievements {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
+    <div class="stars"></div>
     <div class="container">
-        <div class="quiz-header">
-            <h1>Advanced PBPK Modeling & Pharmacology Quiz</h1>
-            <p>Comprehensive assessment covering physiologically-based pharmacokinetic modeling, transporters, enzymes, pregnancy models, and gut microbiome</p>
+        <div class="game-header">
+            <h1 class="game-title">The InQUIZitive MIDDler</h1>
+            <p class="game-subtitle">Regulatory Chronicles</p>
         </div>
 
-        <!-- Quiz Setup Screen -->
-        <div id="setupContainer" class="setup-container">
-            <div class="setup-section">
-                <h3>Select Topics</h3>
-                <div class="topics-grid" id="topicsGrid">
-                    <!-- Topics will be populated by JavaScript -->
+        <!-- Player Stats -->
+        <div id="playerStats" class="player-stats hidden">
+            <div class="stat-card">
+                <div class="stat-label">Regulatory Knowledge</div>
+                <div class="stat-value" id="knowledgeValue">100</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="knowledgeFill" style="width: 100%"></div>
                 </div>
-                <button class="btn btn-secondary" onclick="selectAllTopics()">Select All</button>
-                <button class="btn btn-secondary" onclick="clearAllTopics()">Clear All</button>
             </div>
+            <div class="stat-card">
+                <div class="stat-label">Development Budget</div>
+                <div class="stat-value" id="budgetValue">$25M</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="budgetFill" style="width: 100%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">FDA/EMA Standing</div>
+                <div class="stat-value" id="reputationValue">Trusted</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="reputationFill" style="width: 75%"></div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-label">Submission Pressure</div>
+                <div class="stat-value" id="timeValue">Moderate</div>
+                <div class="stat-bar">
+                    <div class="stat-fill" id="timeFill" style="width: 25%"></div>
+                </div>
+            </div>
+        </div>
 
-            <div class="setup-section">
-                <h3>Configure Quiz</h3>
-                <div class="question-count-section">
-                    <label>Number of Questions:</label>
-                    <div class="question-count-controls">
-                        <button class="count-btn" onclick="adjustQuestionCount(-5)">-5</button>
-                        <button class="count-btn" onclick="adjustQuestionCount(-1)">-</button>
-                        <input type="number" id="questionCount" class="count-input" value="20" min="5" max="100">
-                        <button class="count-btn" onclick="adjustQuestionCount(1)">+</button>
-                        <button class="count-btn" onclick="adjustQuestionCount(5)">+5</button>
+        <!-- Mission Setup -->
+        <div id="missionSetup" class="mission-setup">
+            <h2 class="mission-title">🏛️ Select Your Regulatory Mission</h2>
+            <p style="text-align: center; color: #94a3b8; margin-bottom: 30px;">You are Dr. Alex Chen, Senior PBPK Modeler at The InQUIZitive MIDDler's drug development division. Master advanced modeling challenges, AI-enhanced predictions, and complex absorption mechanisms to accelerate drug discovery.</p>
+            
+            <div class="difficulty-selection">
+                <div class="difficulty-card" onclick="selectDifficulty('rookie_scientist')">
+                    <div class="difficulty-header">
+                        <span class="difficulty-icon">🤖</span>
+                        <span class="difficulty-name">Rookie Scientist</span>
                     </div>
-                    <span id="availableQuestions" style="margin-left: 20px; color: #666;"></span>
+                    <div class="difficulty-description">
+                        New to PBPK modeling. Learn AI-PBPK foundations, absorption modeling, solubility-limited processes, and IVIVE scaling principles.
+                    </div>
+                    <div class="difficulty-rewards">
+                        💡 AI-PBPK Training | 🔬 Absorption Fundamentals | ⏱️ Learning Focus
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" onclick="selectDifficulty('veteran_researcher')">
+                    <div class="difficulty-header">
+                        <span class="difficulty-icon">📊</span>
+                        <span class="difficulty-name">Veteran Researcher</span>
+                    </div>
+                    <div class="difficulty-description">
+                        Experienced modeler tackling complex DDI predictions, special populations, and advanced mechanistic modeling challenges.
+                    </div>
+                    <div class="difficulty-rewards">
+                        🎯 Advanced PBPK Mastery | 🧬 DDI Expertise | 💼 Industry Recognition
+                    </div>
+                </div>
+                
+                <div class="difficulty-card" onclick="selectDifficulty('legend_hunter')">
+                    <div class="difficulty-header">
+                        <span class="difficulty-icon">⚖️</span>
+                        <span class="difficulty-name">Drug Hunter Legend</span>
+                    </div>
+                    <div class="difficulty-description">
+                        Elite modeling expert. Master cutting-edge AI-PBPK integration, novel mechanisms, and industry-defining methodologies.
+                    </div>
+                    <div class="difficulty-rewards">
+                        🏆 Legendary Status | 🚀 Innovation Leadership | 🌍 Scientific Impact
+                    </div>
                 </div>
             </div>
-
-            <div class="nav-buttons">
-                <button class="btn btn-primary" onclick="startQuiz()">Start Quiz</button>
+            
+            <div class="mission-length">
+                <div class="length-option" onclick="selectLength(10)">
+                    <strong>Rapid Assessment</strong><br>
+                    <small>10 Regulatory Decisions</small><br>
+                    <small>~15 minutes</small>
+                </div>
+                <div class="length-option" onclick="selectLength(20)">
+                    <strong>Submission Review</strong><br>
+                    <small>20 Strategic Challenges</small><br>
+                    <small>~30 minutes</small>
+                </div>
+                <div class="length-option" onclick="selectLength(30)">
+                    <strong>Regulatory Marathon</strong><br>
+                    <small>30 Critical Decisions</small><br>
+                    <small>~45 minutes</small>
+                </div>
             </div>
+            
+            <button id="launchMissionBtn" class="launch-mission" onclick="launchMission()" disabled>
+                🚀 Begin Regulatory Mission
+            </button>
         </div>
 
-        <!-- Progress Bar -->
-        <div id="progressContainer" class="progress-container hidden">
+        <!-- Game Progress -->
+        <div id="gameProgress" class="game-progress hidden">
+            <div class="progress-header">
+                <div class="mission-info" id="missionInfo">Regulatory Progress</div>
+                <div class="mission-info" id="difficultyDisplay">Regulatory Scientist Level</div>
+            </div>
             <div class="progress-bar">
                 <div id="progressFill" class="progress-fill" style="width: 0%"></div>
             </div>
-            <div id="progressText" class="progress-text">Question 1 of 20</div>
         </div>
 
-        <!-- Question Container -->
-        <div id="questionContainer" class="question-container hidden">
-            <div class="question-header">
-                <div id="questionNumber" class="question-number">Question 1</div>
-                <div id="topicBadge" class="topic-badge">Topic</div>
+        <!-- Scenario Container -->
+        <div id="scenarioContainer" class="scenario-container hidden">
+            <div class="scenario-header">
+                <div class="scenario-badge" id="scenarioBadge">Regulatory Challenge #1</div>
+                <div class="risk-indicator">
+                    <span>⚠️</span>
+                    <span id="riskLevel">Medium Risk</span>
+                </div>
             </div>
             
-            <div id="questionText" class="question-text"></div>
+            <div id="storyContext" class="story-context"></div>
+            <div id="researchChallenge" class="research-challenge"></div>
             
-            <div id="optionsContainer" class="options-container"></div>
+            <div id="decisionOptions" class="decision-options"></div>
             
-            <div id="explanation" class="explanation hidden">
-                <h4>Explanation</h4>
-                <p id="explanationText"></p>
+            <div id="consequenceAnalysis" class="consequence-analysis hidden">
+                <h4 class="analysis-title">📊 Regulatory Impact Analysis</h4>
+                <p id="analysisText"></p>
+                <div id="impactSummary" class="impact-summary hidden"></div>
             </div>
             
-            <div class="nav-buttons">
-                <button id="prevBtn" class="btn btn-secondary" onclick="previousQuestion()" disabled>Previous</button>
-                <button id="nextBtn" class="btn btn-primary" onclick="nextQuestion()" disabled>Next Question</button>
-                <button id="submitBtn" class="btn btn-primary hidden" onclick="submitQuiz()">Submit Quiz</button>
+            <div class="mission-controls">
+                <button id="prevMissionBtn" class="control-btn btn-secondary" onclick="previousScenario()" disabled>
+                    ← Previous
+                </button>
+                <button id="nextMissionBtn" class="control-btn btn-primary" onclick="nextScenario()" disabled>
+                    Continue Review →
+                </button>
+                <button id="completeMissionBtn" class="control-btn btn-primary hidden" onclick="completeMission()">
+                    Submit to Agency 📤
+                </button>
             </div>
         </div>
 
-        <!-- Results Container -->
-        <div id="resultsContainer" class="question-container results-container hidden">
-            <h2>Quiz Results</h2>
-            <div id="scoreDisplay" class="score-display"></div>
-            <div id="scoreMessage" class="score-message"></div>
+        <!-- Mission Results -->
+        <div id="missionResults" class="scenario-container mission-results hidden">
+            <h2>🎯 Regulatory Mission Complete</h2>
+            <div id="finalScore" class="final-score"></div>
+            <div id="missionOutcome" class="mission-outcome"></div>
             
-            <div class="performance-breakdown">
-                <div class="performance-item">
-                    <div class="performance-label">Correct Answers</div>
-                    <div id="correctCount" class="performance-value">0</div>
+            <div class="achievements">
+                <div class="achievement-card" id="accuracyAchievement">
+                    <div class="achievement-icon">🎯</div>
+                    <div class="achievement-name">Regulatory Expert</div>
+                    <div class="achievement-desc">Achieved 80%+ accuracy on regulatory decisions</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Total Questions</div>
-                    <div id="totalCount" class="performance-value">20</div>
+                <div class="achievement-card" id="speedAchievement">
+                    <div class="achievement-icon">⚡</div>
+                    <div class="achievement-name">Efficient Reviewer</div>
+                    <div class="achievement-desc">Completed submission review in record time</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Percentage</div>
-                    <div id="percentage" class="performance-value">0%</div>
+                <div class="achievement-card" id="perfectionAchievement">
+                    <div class="achievement-icon">🏆</div>
+                    <div class="achievement-name">Perfect Submission</div>
+                    <div class="achievement-desc">100% regulatory compliance achieved</div>
                 </div>
-                <div class="performance-item">
-                    <div class="performance-label">Average Time</div>
-                    <div id="averageTime" class="performance-value">--</div>
+                <div class="achievement-card" id="riskTakerAchievement">
+                    <div class="achievement-icon">⚖️</div>
+                    <div class="achievement-name">Authority Figure</div>
+                    <div class="achievement-desc">Mastered Regulatory Authority level</div>
                 </div>
             </div>
-
-            <div id="topicPerformance" class="topic-performance">
-                <h4>Performance by Topic</h4>
-                <div id="topicScores"></div>
-            </div>
             
-            <div class="nav-buttons" style="margin-top: 30px;">
-                <button class="btn btn-primary" onclick="restartQuiz()">New Quiz</button>
-                <button class="btn btn-secondary" onclick="reviewAnswers()">Review Answers</button>
+            <div class="mission-controls" style="margin-top: 40px;">
+                <button class="control-btn btn-primary" onclick="newMission()">🎮 New Mission</button>
+                <button class="control-btn btn-secondary" onclick="reviewScenarios()">📋 Review Decisions</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Question database organized by topics
-        const questionDatabase = {
-            'basic_pbpk': {
-                title: 'Basic PBPK Concepts',
-                description: 'Fundamental principles of physiologically-based pharmacokinetic modeling',
-                questions: [
-                    {
-                        question: "In PBPK modeling, what does the term 'perfusion-limited' distribution primarily describe?",
-                        options: [
-                            "Drug distribution is limited by blood flow to the tissue",
-                            "Drug distribution is limited by membrane permeability",
-                            "Drug distribution is limited by protein binding",
-                            "Drug distribution is limited by active transport"
-                        ],
-                        correct: 0,
-                        explanation: "Perfusion-limited distribution occurs when drug movement across tissue membranes is rapid compared to blood flow. In this case, the rate-limiting step for drug distribution is the perfusion (blood flow) to the tissue, not membrane permeability."
-                    },
-                    {
-                        question: "Which physiological parameter is most critical when scaling clearance from preclinical species to humans using allometric scaling?",
-                        options: [
-                            "Brain weight",
-                            "Body weight",
-                            "Liver weight", 
-                            "Kidney weight"
-                        ],
-                        correct: 1,
-                        explanation: "Body weight is the fundamental parameter for allometric scaling in PBPK models. The relationship CL = a × BWᵇ (where b is typically 0.75 for metabolic clearance) allows extrapolation across species based on body weight differences."
-                    },
-                    {
-                        question: "In the 'bottom-up' PBPK modeling approach, tissue partition coefficients (Kp) are typically predicted using:",
-                        options: [
-                            "In vivo pharmacokinetic data",
-                            "Physicochemical properties and tissue composition",
-                            "Population pharmacokinetic analysis",
-                            "Clinical bioequivalence studies"
-                        ],
-                        correct: 1,
-                        explanation: "The bottom-up approach uses physicochemical properties (logP, pKa, fu) combined with tissue composition data (water content, lipid content, protein binding) to predict Kp values mechanistically, rather than fitting to observed data."
-                    },
-                    {
-                        question: "What is the primary advantage of incorporating active transport processes in PBPK models?",
-                        options: [
-                            "Reduces model complexity",
-                            "Eliminates the need for in vitro data",
-                            "Better prediction of drug-drug interactions and genetic polymorphisms",
-                            "Simplifies regulatory submissions"
-                        ],
-                        correct: 2,
-                        explanation: "Including active transport (e.g., P-gp, OATP, OCT) allows PBPK models to predict DDIs when transporters are inhibited/induced and to account for genetic polymorphisms affecting transporter expression, improving model predictivity."
-                    },
-                    {
-                        question: "In hepatic clearance prediction, the 'well-stirred model' assumes:",
-                        options: [
-                            "Drug concentration is uniform throughout the liver",
-                            "Only passive diffusion occurs",
-                            "Protein binding is negligible",
-                            "Metabolism follows zero-order kinetics"
-                        ],
-                        correct: 0,
-                        explanation: "The well-stirred (venous equilibrium) model assumes complete mixing, so drug concentration is uniform throughout the hepatocyte and equals the venous concentration leaving the liver."
+        // Game state variables
+        let gameStats = {
+            knowledge: 100,
+            budget: 25000000,
+            reputation: 75,
+            timePressure: 25
+        };
+        
+        let selectedDifficulty = '';
+        let selectedLength = 0;
+        let currentScenarios = [];
+        let currentScenario = 0;
+        let playerChoices = [];
+        let missionStartTime = 0;
+        let missionActive = false;
+        let missionCompleted = false;
+
+        // Enhanced question pools focused on PBPK modeling and AI integration
+        const scenarioPools = {
+            rookie_scientist: [
+                {
+                    context: "🤖 AI-PBPK Training: Your team is implementing machine learning to predict tissue partition coefficients (Kp). The Poulin & Theil method shows systematic bias for basic compounds.",
+                    challenge: "For a basic compound (pKa = 8.5, logP = 3.2), your AI model predicts brain Kp = 0.35, but experimental data shows Kp = 0.12. What's the most likely mechanistic explanation?",
+                    risk: "Low",
+                    options: [
+                        "AI model overestimates passive permeability across blood-brain barrier",
+                        "P-glycoprotein efflux reduces brain accumulation below passive predictions", 
+                        "Brain tissue binding is higher than predicted from physicochemical properties",
+                        "Microsomal protein binding artifacts inflate the apparent Kp value"
+                    ],
+                    correct: 1,
+                    analysis: "Excellent mechanistic insight! Basic compounds (pKa 8.5) are predominantly ionized at physiological pH, making them prime P-gp substrates. The 3-fold discrepancy (0.35 vs 0.12) is classic for efflux transport limiting brain penetration. AI models trained on passive data miss active transport effects.",
+                    impact: "🧠 P-gp mechanism identified | 🤖 AI model limitation understood | 🎯 Transporter integration needed",
+                    consequences: {
+                        budget: 50000,
+                        knowledge: 15,
+                        reputation: 10,
+                        time: 5
                     }
-                ]
-            },
-            'transporters_enzymes': {
-                title: 'Transporters & Metabolizing Enzymes',
-                description: 'Drug transporters, cytochrome P450 enzymes, and their measurement techniques',
-                questions: [
-                    {
-                        question: "Which in vitro system is most appropriate for measuring P-glycoprotein (P-gp) efflux ratios?",
-                        options: [
-                            "Hepatocytes",
-                            "Caco-2 cells",
-                            "Microsomes",
-                            "S9 fractions"
-                        ],
-                        correct: 1,
-                        explanation: "Caco-2 cells are the gold standard for measuring P-gp efflux ratios due to their high P-gp expression and ability to measure bidirectional transport (A→B vs B→A) to calculate efflux ratios."
-                    },
-                    {
-                        question: "The Recovery Index (% Recovery) in microsomal stability assays should ideally be:",
-                        options: [
-                            "≥80% for reliable CLint calculations",
-                            "≤50% to ensure adequate turnover",
-                            "Exactly 100% for all compounds",
-                            "Between 60-70% for optimal conditions"
-                        ],
-                        correct: 0,
-                        explanation: "Recovery Index ≥80% indicates minimal non-specific binding and degradation, ensuring that the measured disappearance reflects true metabolic clearance rather than artifacts."
-                    },
-                    {
-                        question: "OATP1B1 and OATP1B3 transporters are primarily expressed in:",
-                        options: [
-                            "Kidney proximal tubules",
-                            "Blood-brain barrier",
-                            "Hepatic sinusoidal membrane",
-                            "Intestinal enterocytes"
-                        ],
-                        correct: 2,
-                        explanation: "OATP1B1 and OATP1B3 are specifically localized at the hepatic sinusoidal (basolateral) membrane, facilitating uptake of drugs and endogenous compounds from blood into hepatocytes."
-                    },
-                    {
-                        question: "In CYP3A4 induction studies, the positive control typically used is:",
-                        options: [
-                            "Ketoconazole",
-                            "Rifampicin",
-                            "Quinidine",
-                            "Fluvoxamine"
-                        ],
-                        correct: 1,
-                        explanation: "Rifampicin is the prototypical CYP3A4 inducer used as positive control, activating the pregnane X receptor (PXR) pathway to increase CYP3A4 mRNA and protein expression."
-                    },
-                    {
-                        question: "The 'cut-off' criteria for clinically relevant transporter inhibition in vitro is typically:",
-                        options: [
-                            "IC50 < 10 μM",
-                            "IC50 < 1 μM", 
-                            "R-value ≥ 1.1",
-                            "Efflux ratio > 2"
-                        ],
-                        correct: 2,
-                        explanation: "R-value (1 + [I]/IC50) ≥ 1.1 is the regulatory criterion, where [I] is the unbound inhibitor concentration and IC50 is the inhibition constant. This indicates ≥10% inhibition potential in vivo."
-                    },
-                    {
-                        question: "UGT enzymes primarily catalyze:",
-                        options: [
-                            "Oxidative metabolism",
-                            "Hydrolysis reactions",
-                            "Glucuronidation conjugation",
-                            "Acetylation reactions"
-                        ],
-                        correct: 2,
-                        explanation: "UDP-glucuronosyltransferases (UGTs) catalyze glucuronidation, a Phase II conjugation reaction that attaches glucuronic acid to compounds, typically increasing their hydrophilicity and facilitating excretion."
+                },
+                {
+                    context: "📊 Absorption Modeling: Your BCS Class II compound shows poor oral bioavailability (F = 12%). Dissolution rate is solubility-limited with tmax = 4.5 hours.",
+                    challenge: "Using ACAT modeling principles, which mechanistic parameter would most improve bioavailability predictions for solubility-limited absorption?",
+                    risk: "Medium",
+                    options: [
+                        "Increasing effective permeability (Peff) in the small intestine",
+                        "Accounting for bile acid-mediated solubilization enhancement",
+                        "Including gastric pH effects on dissolution kinetics", 
+                        "Modeling particle size distribution effects on surface area"
+                    ],
+                    correct: 1,
+                    analysis: "Outstanding! For BCS Class II compounds, solubility is the rate-limiting step. Bile acids form mixed micelles that dramatically enhance apparent solubility (up to 10-fold increases). The late tmax (4.5h) indicates slow dissolution limited by aqueous solubility, which bile acid modeling would address mechanistically.",
+                    impact: "💊 Solubility mechanism clarified | 🔬 ACAT model enhanced | 📈 Bioavailability prediction improved",
+                    consequences: {
+                        budget: 25000,
+                        knowledge: 18,
+                        reputation: 12,
+                        time: 8
                     }
-                ]
-            },
-            'pregnancy_pbpk': {
-                title: 'Pregnancy PBPK Models',
-                description: 'Physiological changes during pregnancy and maternal-fetal drug transfer',
-                questions: [
-                    {
-                        question: "During the third trimester of pregnancy, cardiac output typically increases by:",
-                        options: [
-                            "10-20%",
-                            "30-50%",
-                            "60-80%",
-                            "90-110%"
-                        ],
-                        correct: 1,
-                        explanation: "Cardiac output increases by 30-50% during pregnancy, peaking in the second trimester and remaining elevated through the third trimester. This significantly affects drug distribution and clearance."
-                    },
-                    {
-                        question: "Which CYP enzyme shows the most significant induction during pregnancy?",
-                        options: [
-                            "CYP1A2",
-                            "CYP2D6",
-                            "CYP3A4",
-                            "CYP2C19"
-                        ],
-                        correct: 2,
-                        explanation: "CYP3A4 activity increases substantially (up to 2-fold) during pregnancy due to hormonal induction, significantly affecting the metabolism of CYP3A4 substrates like nifedipine and midazolam."
-                    },
-                    {
-                        question: "The placental transfer of drugs is primarily determined by:",
-                        options: [
-                            "Molecular weight alone",
-                            "Lipophilicity, protein binding, and molecular weight",
-                            "Maternal blood flow only",
-                            "Fetal organ development stage"
-                        ],
-                        correct: 1,
-                        explanation: "Placental drug transfer depends on multiple factors: lipophilicity (for passive diffusion), protein binding (affects free fraction), molecular weight (>500 Da limits transfer), and presence of active transporters."
-                    },
-                    {
-                        question: "In pregnancy PBPK models, the most challenging parameter to accurately predict is:",
-                        options: [
-                            "Maternal plasma volume changes",
-                            "Renal clearance changes",
-                            "Placental drug transfer kinetics",
-                            "Cardiac output changes"
-                        ],
-                        correct: 2,
-                        explanation: "Placental transfer is most challenging due to complex, compound-specific mechanisms including passive diffusion, active transport, and metabolism within the placenta, with limited in vitro-in vivo correlation methods."
-                    },
-                    {
-                        question: "Albumin concentrations during pregnancy typically:",
-                        options: [
-                            "Increase by 20-30%",
-                            "Remain unchanged",
-                            "Decrease by 20-30%",
-                            "Show high inter-individual variability"
-                        ],
-                        correct: 2,
-                        explanation: "Albumin concentrations decrease by approximately 20-30% during pregnancy due to hemodilution and increased albumin clearance, affecting protein binding of drugs and their free fractions."
-                    },
-                    {
-                        question: "The ex vivo placental perfusion model (EVPPM) is primarily used to study:",
-                        options: [
-                            "Maternal protein binding changes",
-                            "Fetal organ development",
-                            "Placental drug transfer mechanisms",
-                            "Amniotic fluid drug concentrations"
-                        ],
-                        correct: 2,
-                        explanation: "EVPPM uses isolated human placenta to study bidirectional drug transfer, metabolism within placental tissue, and the effects of transporters on maternal-fetal drug exchange under controlled conditions."
+                },
+                {
+                    context: "🧬 IVIVE Scaling: Your hepatic clearance predictions consistently overestimate by 5-fold. CLint,microsomes = 125 μL/min/mg protein, but predicted CLh = 18 L/h vs observed CLh = 3.8 L/h.",
+                    challenge: "Which IVIVE scaling factor correction would most likely resolve this systematic over-prediction?",
+                    risk: "Medium",
+                    options: [
+                        "Reduce MPPGL from 40 to 32 mg/g liver for inter-individual variability",
+                        "Apply microsomal protein binding correction (fu,mic = 0.23)",
+                        "Include cytosolic binding effects reducing free drug concentration",
+                        "Account for relative expression factor (REF) between microsomes and hepatocytes"
+                    ],
+                    correct: 1,
+                    analysis: "Brilliant diagnosis! Microsomal protein binding (fu,mic) is often the largest systematic error in IVIVE scaling. With fu,mic = 0.23, the effective intrinsic clearance becomes 125 × 0.23 = 29 μL/min/mg, reducing predicted clearance by 4.3-fold—closely matching your observation!",
+                    impact: "⚗️ IVIVE accuracy improved | 🎯 Protein binding mechanism understood | 📊 Scaling factor optimized",
+                    consequences: {
+                        budget: 75000,
+                        knowledge: 20,
+                        reputation: 15,
+                        time: 10
                     }
-                ]
-            },
-            'gut_microbiome': {
-                title: 'Gut Microbiome & GI Modeling',
-                description: 'Microbiome effects on drug metabolism and advanced GI tract modeling',
-                questions: [
-                    {
-                        question: "Which bacterial enzyme is primarily responsible for the reduction of sulfasalazine in the colon?",
-                        options: [
-                            "β-glucuronidase",
-                            "Azoreductase",
-                            "Nitroreductase", 
-                            "Esterase"
-                        ],
-                        correct: 1,
-                        explanation: "Azoreductase enzymes produced by colonic bacteria cleave the azo bond in sulfasalazine, releasing 5-aminosalicylic acid (the active metabolite) and sulfapyridine. This is essential for the drug's therapeutic effect in inflammatory bowel disease."
-                    },
-                    {
-                        question: "In advanced GI-PBPK models, the Advanced Compartmental Absorption and Transit (ACAT) model divides the small intestine into how many compartments?",
-                        options: [
-                            "3 compartments",
-                            "7 compartments",
-                            "9 compartments",
-                            "12 compartments"
-                        ],
-                        correct: 2,
-                        explanation: "The ACAT model typically uses 9 compartments: stomach, 7 small intestinal segments (duodenum, jejunum 1-4, ileum 1-2), and colon, each with region-specific parameters for pH, transit times, surface area, and enzyme/transporter expression."
-                    },
-                    {
-                        question: "β-glucuronidase activity by gut bacteria primarily affects:",
-                        options: [
-                            "Phase I metabolite formation",
-                            "Enterohepatic recirculation of glucuronide conjugates",
-                            "Active transport in enterocytes",
-                            "Gastric emptying rates"
-                        ],
-                        correct: 1,
-                        explanation: "Bacterial β-glucuronidase cleaves glucuronide conjugates in bile back to the parent drug, enabling reabsorption and enterohepatic recirculation. This significantly extends drug half-life and can cause toxicity (e.g., irinotecan-induced diarrhea)."
-                    },
-                    {
-                        question: "Which factor is most critical when modeling interindividual variability in gut microbiome drug metabolism?",
-                        options: [
-                            "Age differences",
-                            "Bacterial enzyme expression variability",
-                            "Transit time variations",
-                            "pH differences"
-                        ],
-                        correct: 1,
-                        explanation: "Bacterial enzyme expression shows enormous interindividual variability (up to 1000-fold) due to differences in microbiome composition, antibiotic history, diet, and genetics, making it the dominant factor in microbiome-mediated drug metabolism variability."
-                    },
-                    {
-                        question: "In PBPK models incorporating microbiome effects, the 'metabolic capacity' of colonic bacteria is typically expressed as:",
-                        options: [
-                            "Km and Vmax parameters",
-                            "First-order rate constants per gram content",
-                            "Michaelis-Menten kinetics per bacterial count",
-                            "Zero-order elimination rates"
-                        ],
-                        correct: 1,
-                        explanation: "Bacterial metabolic capacity is commonly modeled as first-order rate constants normalized to gram of colonic content, as bacterial counts and enzyme activities are difficult to measure precisely and show high variability."
-                    },
-                    {
-                        question: "The concept of 'microbial metabolic stability' in drug development refers to:",
-                        options: [
-                            "Bacterial growth rate in culture",
-                            "Drug degradation by gut bacteria in vitro",
-                            "Antibiotic effects on microbiome",
-                            "Probiotic supplementation effects"
-                        ],
-                        correct: 1,
-                        explanation: "Microbial metabolic stability assays use fecal slurries or isolated bacterial strains to measure drug degradation/metabolism by gut bacteria, helping predict colonic metabolism and potential for microbiome-mediated drug interactions."
+                },
+                {
+                    context: "🤖 Neural-ODE Implementation: You're implementing Neural Ordinary Differential Equations for PK prediction. The model learns ODE parameters directly from concentration-time data.",
+                    challenge: "What's the primary advantage of Neural-ODEs over traditional machine learning for PBPK parameter estimation?",
+                    risk: "Low", 
+                    options: [
+                        "Better handling of irregular time sampling in clinical datasets",
+                        "Reduced computational requirements for training",
+                        "Automatic feature selection from molecular descriptors",
+                        "Elimination of need for mechanistic model structure"
+                    ],
+                    correct: 0,
+                    analysis: "Perfect! Neural-ODEs excel with irregular time intervals, a major limitation of traditional RNNs/LSTMs that require fixed time grids. Clinical PK data has sparse, irregular sampling, making Neural-ODEs ideal for learning continuous dynamics from real-world datasets.",
+                    impact: "🧠 Neural-ODE advantage understood | ⏰ Irregular sampling handled | 🎯 AI architecture optimized",
+                    consequences: {
+                        budget: 40000,
+                        knowledge: 16,
+                        reputation: 8,
+                        time: 6
                     }
-                ]
-            },
-            'ddi_interactions': {
-                title: 'Drug-Drug Interactions',
-                description: 'Transporter and enzyme-mediated interactions in PBPK context',
-                questions: [
-                    {
-                        question: "For prediction of hepatic OATP1B1-mediated DDIs, the R-value equation incorporates:",
-                        options: [
-                            "Only hepatic inlet concentration",
-                            "Both hepatic inlet and systemic unbound concentrations",
-                            "Protein binding in liver tissue",
-                            "Biliary clearance parameters"
-                        ],
-                        correct: 1,
-                        explanation: "Hepatic OATP DDI R-values use R = 1 + ([I,u,inlet]/Ki) + ([I,u,sys]/Ki), accounting for both hepatic inlet concentration (relevant for intestinal absorption) and systemic unbound concentration (for IV drugs)."
-                    },
-                    {
-                        question: "Time-dependent inhibition (TDI) of CYP enzymes is characterized by:",
-                        options: [
-                            "Competitive inhibition kinetics",
-                            "Formation of irreversible enzyme-inhibitor complex",
-                            "Induction of enzyme expression",
-                            "Allosteric modulation"
-                        ],
-                        correct: 1,
-                        explanation: "TDI involves irreversible or quasi-irreversible binding to the enzyme, often through reactive metabolite formation, requiring enzyme resynthesis for activity recovery. This creates time- and concentration-dependent inhibition."
-                    },
-                    {
-                        question: "The 'static model' for DDI prediction assumes:",
-                        options: [
-                            "Dynamic changes in enzyme expression",
-                            "Steady-state inhibitor concentrations",
-                            "Non-linear pharmacokinetics",
-                            "Time-dependent protein binding"
-                        ],
-                        correct: 1,
-                        explanation: "Static DDI models use steady-state inhibitor concentrations and don't account for temporal changes during treatment initiation/discontinuation, providing initial DDI risk assessment but may under/overestimate complex interactions."
-                    },
-                    {
-                        question: "In renal DDI prediction, the interaction index (R) ≥ 1.1 at the proximal tubule level indicates:",
-                        options: [
-                            "No clinically relevant interaction",
-                            "Potential for ≥25% increase in victim drug exposure",
-                            "Induction of renal transporters",
-                            "Decreased renal blood flow"
-                        ],
-                        correct: 1,
-                        explanation: "Renal R ≥ 1.1 suggests ≥10% inhibition of renal clearance, which typically translates to ≥25% increase in systemic exposure for drugs with significant renal elimination, warranting clinical DDI studies."
-                    },
-                    {
-                        question: "Perpetrator drugs that are both CYP3A4 and P-gp inhibitors often cause:",
-                        options: [
-                            "Additive effects on oral bioavailability",
-                            "Synergistic increases in victim drug exposure",
-                            "Compensatory effects reducing overall interaction",
-                            "No change in drug disposition"
-                        ],
-                        correct: 1,
-                        explanation: "Dual CYP3A4/P-gp inhibitors cause synergistic effects because they simultaneously increase intestinal absorption (P-gp inhibition) and decrease first-pass metabolism (CYP3A4 inhibition), leading to disproportionate bioavailability increases."
+                },
+                {
+                    context: "📈 Dissolution Modeling: Your immediate-release tablet shows pH-dependent dissolution. At pH 1.2: 85% dissolved in 30 min. At pH 6.8: 23% dissolved in 2 hours.",
+                    challenge: "This dissolution profile is most consistent with which compound characteristics?",
+                    risk: "Low",
+                    options: [
+                        "Weak acid with pKa around 4.5-5.5",
+                        "Weak base salt form with pKa around 8-9", 
+                        "Neutral compound with pH-independent solubility",
+                        "Ampholyte with isoelectric point near pH 6.8"
+                    ],
+                    correct: 1,
+                    analysis: "Excellent analysis! The dramatic pH-dependent dissolution (85% at pH 1.2 vs 23% at pH 6.8) indicates a weak base salt. At low pH, the compound is ionized and highly soluble. As pH increases toward the pKa (~8-9), ionization decreases, reducing solubility and dissolution rate.",
+                    impact: "🧪 pH-solubility relationship mastered | 💊 Salt form behavior understood | 🎯 Formulation strategy clarified",
+                    consequences: {
+                        budget: 30000,
+                        knowledge: 17,
+                        reputation: 11,
+                        time: 7
                     }
-                ]
-            },
-            'special_populations': {
-                title: 'Special Populations',
-                description: 'PBPK modeling in pediatrics, geriatrics, and disease states',
-                questions: [
-                    {
-                        question: "Which population is typically most challenging to predict using adult PBPK models without physiological adjustments?",
-                        options: [
-                            "Elderly patients (>75 years)",
-                            "Pediatric patients (<12 years)",
-                            "Pregnant women",
-                            "Obese patients (BMI >35)"
-                        ],
-                        correct: 1,
-                        explanation: "Pediatric populations require extensive physiological adjustments due to developmental changes in organ sizes, blood flows, enzyme expression (especially CYPs), and protein binding that occur from birth through adolescence."
-                    },
-                    {
-                        question: "In hepatic impairment PBPK models, the Child-Pugh score primarily reflects changes in:",
-                        options: [
-                            "Hepatic blood flow only",
-                            "CYP enzyme expression only",
-                            "Multiple factors: albumin, bilirubin, PT, ascites, encephalopathy",
-                            "Biliary function only"
-                        ],
-                        correct: 2,
-                        explanation: "Child-Pugh classification incorporates albumin, bilirubin, prothrombin time, ascites, and encephalopathy to assess overall hepatic function, requiring corresponding adjustments to multiple PBPK parameters."
-                    },
-                    {
-                        question: "Age-related changes in CYP3A4 expression reach adult levels by approximately:",
-                        options: [
-                            "6 months",
-                            "2 years", 
-                            "5 years",
-                            "10 years"
-                        ],
-                        correct: 1,
-                        explanation: "CYP3A4 expression is very low at birth, increases rapidly during the first year, and reaches adult levels by approximately 2 years of age, requiring age-specific scaling factors in pediatric PBPK models."
-                    },
-                    {
-                        question: "In renal impairment PBPK models, creatinine clearance is used to scale:",
-                        options: [
-                            "All renal elimination pathways equally",
-                            "Glomerular filtration rate only",
-                            "Active secretion and reabsorption pathways",
-                            "Both filtration and secretion with different scaling factors"
-                        ],
-                        correct: 3,
-                        explanation: "Creatinine clearance primarily reflects GFR and scales filtration well, but active secretion/reabsorption may be affected differently in renal impairment, requiring separate scaling approaches for different elimination mechanisms."
-                    },
-                    {
-                        question: "Obesity-related changes most significantly affect PBPK predictions for:",
-                        options: [
-                            "Hydrophilic drugs with small Vd",
-                            "Lipophilic drugs with large Vd",
-                            "Drugs eliminated by glomerular filtration",
-                            "Drugs with high hepatic extraction"
-                        ],
-                        correct: 1,
-                        explanation: "Lipophilic drugs show increased distribution to adipose tissue in obesity, significantly increasing apparent volume of distribution and affecting elimination kinetics, requiring adipose tissue expansion factors in PBPK models."
+                },
+                {
+                    context: "🔬 Machine Learning Integration: Your AI-PBPK platform uses Graph Neural Networks (GNNs) to predict ADME parameters from molecular structure.",
+                    challenge: "Why are GNNs particularly well-suited for structure-based PBPK parameter prediction compared to traditional molecular descriptors?",
+                    risk: "Medium",
+                    options: [
+                        "GNNs automatically capture topological relationships between atoms",
+                        "Reduced computational overhead for large molecular datasets",
+                        "Better handling of categorical molecular properties",
+                        "Elimination of need for 3D conformational information"
+                    ],
+                    correct: 0,
+                    analysis: "Superb! GNNs excel because they learn from molecular graph structure, automatically capturing atom connectivity, bond types, and local chemical environments. This provides richer representation than fixed descriptors, allowing the model to discover structure-property relationships relevant for PBPK parameters.",
+                    impact: "🕸️ GNN architecture mastered | 🧬 Molecular representation optimized | 🤖 AI-PBPK integration advanced",
+                    consequences: {
+                        budget: 60000,
+                        knowledge: 19,
+                        reputation: 13,
+                        time: 9
                     }
-                ]
-            },
-            'regulatory_applications': {
-                title: 'Regulatory Applications',
-                description: 'PBPK in drug development, regulatory submissions, and model qualification',
-                questions: [
-                    {
-                        question: "For regulatory acceptance, PBPK models typically require prediction accuracy within:",
-                        options: [
-                            "1.5-fold for AUC and Cmax",
-                            "2-fold for AUC and Cmax",
-                            "3-fold for AUC and Cmax", 
-                            "5-fold for AUC and Cmax"
-                        ],
-                        correct: 1,
-                        explanation: "FDA and EMA guidance generally expect PBPK model predictions within 2-fold of observed values for key parameters (AUC, Cmax) to be considered acceptable for regulatory decision-making."
-                    },
-                    {
-                        question: "The FDA's 'Model-Informed Drug Development' (MIDD) program encourages PBPK use for:",
-                        options: [
-                            "Replacing all clinical trials",
-                            "Supporting dose selection and special population studies",
-                            "Marketing applications only",
-                            "Post-market surveillance exclusively"
-                        ],
-                        correct: 1,
-                        explanation: "MIDD promotes PBPK models to support dose selection, predict exposures in special populations, assess DDI risks, and optimize clinical trial designs, complementing rather than replacing clinical studies."
-                    },
-                    {
-                        question: "In regulatory submissions, PBPK model 'verification' refers to:",
-                        options: [
-                            "Comparison with clinical pharmacokinetic data",
-                            "Code review and mathematical accuracy check",
-                            "Literature validation of physiological parameters",
-                            "Cross-platform model comparison"
-                        ],
-                        correct: 1,
-                        explanation: "Model verification ensures the mathematical implementation correctly represents the conceptual model through code review, mass balance checks, and confirmation that equations are properly coded."
-                    },
-                    {
-                        question: "For DDI liability assessment, regulators typically require PBPK validation with:",
-                        options: [
-                            "At least 3 victim drugs as substrates",
-                            "At least 5 victim drugs across different elimination pathways", 
-                            "Only the drug being developed",
-                            "Positive and negative control compounds"
-                        ],
-                        correct: 1,
-                        explanation: "Robust DDI PBPK models require validation with multiple victim drugs (typically ≥5) representing different elimination pathways to demonstrate model reliability across various scenarios."
-                    },
-                    {
-                        question: "The concept of PBPK model 'qualification' in regulatory context means:",
-                        options: [
-                            "Initial model development",
-                            "Demonstration of fit-for-purpose reliability for specific regulatory questions",
-                            "Software validation",
-                            "Literature review completion"
-                        ],
-                        correct: 1,
-                        explanation: "Model qualification demonstrates that the PBPK model is reliable and accurate for answering specific regulatory questions (e.g., pediatric dosing, DDI predictions) within defined contexts and limitations."
+                }
+            ],
+            veteran_researcher: [
+                {
+                    context: "🧬 Complex DDI Network: Your oncology drug inhibits CYP3A4 (Ki = 0.8 μM) and induces CYP2C9 (EC50 = 2.1 μM) simultaneously. Clinical dose achieves Css = 3.2 μM.",
+                    challenge: "For warfarin co-administration (CYP2C9 substrate), your PBPK model should predict what net effect?",
+                    risk: "High",
+                    options: [
+                        "Net induction effect reducing warfarin exposure by 40-60%",
+                        "Competing effects canceling out with minimal net change (<20%)",
+                        "Time-dependent transition from inhibition to induction over 7-14 days",
+                        "Inhibition dominant due to higher warfarin affinity for CYP2C9"
+                    ],
+                    correct: 2,
+                    analysis: "Outstanding pharmacology insight! With Css (3.2 μM) > EC50 (2.1 μM), induction will be significant, but induction takes time for enzyme synthesis. Initially, you'd see inhibition effects, then gradual transition to net induction as new enzyme is synthesized. This temporal pattern is critical for clinical management.",
+                    impact: "⏰ Time-dependent DDI mastered | 🧬 Enzyme kinetics understood | ⚖️ Clinical relevance achieved",
+                    consequences: {
+                        budget: 200000,
+                        knowledge: 25,
+                        reputation: 20,
+                        time: 15
                     }
-                ]
-            }
+                },
+                {
+                    context: "🎯 AI-Enhanced Prediction: Your ensemble ML model combines Random Forest and Neural Networks for Kp prediction. Cross-validation R² = 0.78, but external validation R² = 0.52.",
+                    challenge: "This performance discrepancy most likely indicates which modeling issue that impacts PBPK predictions?",
+                    risk: "High",
+                    options: [
+                        "Overfitting to training chemical space with poor generalization",
+                        "Insufficient training data leading to high model variance", 
+                        "Feature selection bias toward correlated molecular descriptors",
+                        "Inadequate hyperparameter tuning during model development"
+                    ],
+                    correct: 0,
+                    analysis: "Excellent diagnosis! The large gap between cross-validation (0.78) and external validation (0.52) is classic overfitting. Your ensemble learned training set peculiarities rather than generalizable structure-property relationships. This limits PBPK model utility for novel chemical series.",
+                    impact: "🎯 Overfitting identified | 🧪 Generalization improved | 🤖 Model robustness enhanced",
+                    consequences: {
+                        budget: -100000,
+                        knowledge: 24,
+                        reputation: 18,
+                        time: 12
+                    }
+                },
+                {
+                    context: "💊 Pediatric PBPK Challenge: Your adult model needs scaling for ages 2-12. CYP3A4 substrate with extensive hepatic metabolism (fm,CYP3A4 = 0.85).",
+                    challenge: "At age 6, which ontogeny scaling approach provides the most mechanistically sound clearance prediction?",
+                    risk: "High",
+                    options: [
+                        "Linear scaling: CLchild = CLadult × (Weight_child/Weight_adult)",
+                        "Allometric scaling: CLchild = CLadult × (Weight_child/Weight_adult)^0.75",
+                        "Ontogeny function: CLchild = CLadult × Ontogeny_factor(age=6) × Weight_scaling",
+                        "Surface area scaling: CLchild = CLadult × (BSA_child/BSA_adult)"
+                    ],
+                    correct: 2,
+                    analysis: "Outstanding pediatric pharmacology! CYP3A4 ontogeny is complex—expression at age 6 is ~60% of adult levels. Simple weight scaling ignores enzymatic immaturity. The ontogeny function approach accounts for both developmental enzyme expression AND size scaling, providing physiologically realistic predictions.",
+                    impact: "👶 Pediatric ontogeny mastered | 🧬 CYP3A4 development understood | 🎯 Age-appropriate dosing enabled",
+                    consequences: {
+                        budget: 300000,
+                        knowledge: 28,
+                        reputation: 22,
+                        time: 18
+                    }
+                },
+                {
+                    context: "🔬 Transporter-Mediated DDI: Your OATP1B1 substrate shows 4.2-fold AUC increase with rifampin co-administration, but your static DDI model predicts only 1.8-fold.",
+                    challenge: "What mechanistic refinement would most improve your PBPK DDI prediction accuracy?",
+                    risk: "High",
+                    options: [
+                        "Include OATP1B3 inhibition in addition to OATP1B1",
+                        "Account for rifampin's metabolite (25-desacetyl) inhibition potency",
+                        "Model concentration-dependent inhibition using unbound liver concentration",
+                        "Add efflux transporter (MRP2/4) inhibition to the hepatic model"
+                    ],
+                    correct: 2,
+                    analysis: "Brilliant mechanistic insight! Rifampin achieves very high liver concentrations (~100× plasma levels) due to OATP uptake. Using unbound liver concentration for Ki assessment captures the true inhibition potential at the transporter site, explaining the stronger clinical DDI than plasma-based predictions suggest.",
+                    impact: "🎯 Hepatic concentration gradients understood | 🧬 Transporter DDI mechanics mastered | 📊 Prediction accuracy improved",
+                    consequences: {
+                        budget: 150000,
+                        knowledge: 26,
+                        reputation: 21,
+                        time: 16
+                    }
+                },
+                {
+                    context: "⚗️ Biopharmaceutics Challenge: Your BCS Class IV compound (low solubility, low permeability) needs bioavailability enhancement. Current F = 8%.",
+                    challenge: "Which PBPK modeling approach would best guide formulation strategy for this challenging compound?",
+                    risk: "High", 
+                    options: [
+                        "ACAT model with regional permeability and pH-dependent solubility",
+                        "Dissolution-precipitation model with supersaturation kinetics",
+                        "Particle size distribution model with surface area effects",
+                        "Lipid-based formulation model with mixed micelle formation"
+                    ],
+                    correct: 3,
+                    analysis: "Excellent strategic thinking! For BCS Class IV compounds, both solubility and permeability are limiting. Lipid-based formulations (LBF) can simultaneously enhance both: creating supersaturated solutions that increase thermodynamic activity (driving permeation) while maintaining dissolved drug through mixed micelle formation.",
+                    impact: "💊 BCS Class IV strategy mastered | 🧪 Lipid formulation modeling | 📈 Bioavailability enhancement pathway",
+                    consequences: {
+                        budget: 250000,
+                        knowledge: 27,
+                        reputation: 23,
+                        time: 17
+                    }
+                },
+                {
+                    context: "🤖 Advanced AI Integration: You're implementing transfer learning to adapt PBPK models across species. Mouse-to-human scaling shows consistent 3-fold clearance under-prediction.",
+                    challenge: "Which mechanistic difference most likely explains this systematic scaling error in your AI-enhanced PBPK approach?",
+                    risk: "High",
+                    options: [
+                        "Species differences in microsomal protein per gram liver (MPPGL)",
+                        "Hepatocyte size differences affecting intracellular drug concentrations",
+                        "CYP enzyme expression level variations between species",
+                        "Plasma protein binding differences altering free drug fractions"
+                    ],
+                    correct: 0,
+                    analysis: "Outstanding cross-species insight! MPPGL varies significantly: mouse (~45 mg/g) vs human (~32 mg/g). This 40% difference would cause systematic over-prediction of human clearance from mouse data. Your AI model needs species-specific scaling factors to account for these physiological differences.",
+                    impact: "🐭 Cross-species scaling mastered | 🤖 AI model calibrated | 🧬 Physiological differences accounted",
+                    consequences: {
+                        budget: 180000,
+                        knowledge: 29,
+                        reputation: 24,
+                        time: 19
+                    }
+                }
+            ],
+            legend_hunter: [
+                {
+                    context: "🚨 BREAKTHROUGH CHALLENGE: Your AI-PBPK platform discovered a novel absorption mechanism for a cyclic peptide. Traditional models predict F < 1%, but clinical data shows F = 23%.",
+                    challenge: "The AI identified co-administration with endogenous bile acids increases paracellular transport. What's the most likely mechanistic pathway enabling this unexpected bioavailability?",
+                    risk: "Critical",
+                    options: [
+                        "Bile acid-induced tight junction modulation via claudin-2 upregulation",
+                        "Formation of bile acid-peptide co-micelles enhancing transcellular uptake",
+                        "P-glycoprotein inhibition by secondary bile acids reducing efflux",
+                        "Peptidase inhibition in enterocytes preventing presystemic metabolism"
+                    ],
+                    correct: 0,
+                    analysis: "REVOLUTIONARY INSIGHT! Bile acids can modulate tight junction permeability through claudin-2 regulation, creating a paracellular pathway for hydrophilic peptides. This mechanism bypasses traditional transcellular limitations and explains the dramatic bioavailability enhancement your AI discovered. This could revolutionize peptide delivery strategies!",
+                    impact: "🔬 Novel mechanism discovered | 🧬 Paracellular transport mastered | 💊 Peptide delivery breakthrough | 🏆 Scientific paradigm shift",
+                    consequences: {
+                        budget: 500000,
+                        knowledge: 35,
+                        reputation: 40,
+                        time: 25
+                    }
+                },
+                {
+                    context: "⚡ NEURAL-ODE MASTERY: Your cutting-edge Neural-ODE PBPK system learns population variability patterns from sparse clinical data. The model predicts individual PK profiles with 89% accuracy.",
+                    challenge: "To achieve FDA qualification for this AI-PBPK platform, what's the most critical validation requirement for regulatory acceptance?",
+                    risk: "Critical",
+                    options: [
+                        "Demonstrate mechanistic interpretability of learned ODE parameters",
+                        "Validate against prospective clinical trial data from independent populations",
+                        "Show superior performance to traditional PBPK across multiple compounds",
+                        "Quantify prediction uncertainty with confidence intervals"
+                    ],
+                    correct: 1,
+                    analysis: "MASTERFUL understanding of AI validation! Regulatory agencies require prospective validation on completely independent datasets to prove generalizability beyond training data. Your 89% retrospective accuracy is impressive, but FDA acceptance demands demonstrated performance on new clinical studies with different populations and study designs.",
+                    impact: "⚖️ FDA AI pathway understood | 🎯 Validation strategy optimized | 🤖 Neural-ODE regulation mastered | 📊 Prospective validation planned",
+                    consequences: {
+                        budget: 750000,
+                        knowledge: 38,
+                        reputation: 42,
+                        time: 28
+                    }
+                },
+                {
+                    context: "🧬 SYSTEMS PHARMACOLOGY: Your multi-scale PBPK model integrates tissue-level metabolism with cellular transporter dynamics. The model captures non-linear PK saturation at therapeutic doses.",
+                    challenge: "For a compound showing Michaelis-Menten kinetics in both hepatic uptake (OATP1B1) and metabolism (CYP2C8), which parameter interaction most critically determines non-linear clearance?",
+                    risk: "Critical",
+                    options: [
+                        "Ratio of transporter Km to enzyme Km values",
+                        "Relative expression levels of OATP1B1 vs CYP2C8 in hepatocytes",
+                        "Competition between uptake velocity and metabolic velocity",
+                        "Intracellular drug concentration approaching both Km values simultaneously"
+                    ],
+                    correct: 3,
+                    analysis: "LEGENDARY systems thinking! When intracellular concentration approaches both the transporter Km and enzyme Km simultaneously, you get complex non-linear behavior where uptake and metabolism compete for the same drug molecules. This creates concentration-dependent clearance patterns that require sophisticated PBPK modeling to predict accurately.",
+                    impact: "🧠 Systems-level integration achieved | ⚗️ Transporter-enzyme interplay mastered | 📈 Non-linear kinetics predicted | 🎯 Therapeutic window optimized",
+                    consequences: {
+                        budget: 600000,
+                        knowledge: 40,
+                        reputation: 45,
+                        time: 30
+                    }
+                },
+                {
+                    context: "🎯 PRECISION MEDICINE: Your AI-PBPK platform integrates pharmacogenomics, disease state, and co-medication effects to predict individual drug exposure. The model accounts for 847 genetic variants.",
+                    challenge: "For CYP2D6 poor metabolizers taking your drug (fm,CYP2D6 = 0.65) with quinidine co-medication, which mechanistic consideration is most critical for accurate exposure prediction?",
+                    risk: "Critical",
+                    options: [
+                        "Compensatory clearance through minor metabolic pathways (CYP3A4, CYP2C19)",
+                        "Altered tissue distribution due to changed protein binding patterns",
+                        "Renal clearance changes from accumulation of parent compound",
+                        "Time-dependent inhibition kinetics of quinidine on residual CYP2D6 activity"
+                    ],
+                    correct: 0,
+                    analysis: "BRILLIANT precision medicine insight! In CYP2D6 poor metabolizers, minor pathways become critical for clearance. With 65% metabolism normally through CYP2D6, alternative routes (CYP3A4, CYP2C19) must handle the entire metabolic burden. Your AI model must accurately predict this pathway switching to avoid dangerous exposure increases.",
+                    impact: "🧬 Pharmacogenomic compensation mastered | 🎯 Individual prediction achieved | 💊 Personalized dosing enabled | 🏆 Precision medicine advanced",
+                    consequences: {
+                        budget: 800000,
+                        knowledge: 42,
+                        reputation: 47,
+                        time: 32
+                    }
+                },
+                {
+                    context: "🚀 NEXT-GENERATION MODELING: Your team developed the first quantum-enhanced PBPK model using quantum machine learning for molecular property prediction. Initial results show 94% accuracy.",
+                    challenge: "What represents the most significant advantage of quantum-enhanced approaches for complex PBPK parameter estimation?",
+                    risk: "Critical",
+                    options: [
+                        "Exponential speedup in molecular descriptor calculations",
+                        "Ability to model quantum effects in drug-protein interactions",
+                        "Enhanced pattern recognition in high-dimensional chemical space",
+                        "Simultaneous optimization of multiple correlated PBPK parameters"
+                    ],
+                    correct: 2,
+                    analysis: "VISIONARY understanding! Quantum machine learning excels at finding patterns in exponentially large, high-dimensional spaces—exactly what's needed for chemical space exploration. Traditional computers struggle with the combinatorial complexity of molecular property relationships, but quantum systems can naturally handle these multi-dimensional correlations for PBPK parameter prediction.",
+                    impact: "🔮 Quantum computing mastered | 🌌 High-dimensional space navigation | 🧬 Molecular complexity conquered | 🏆 Future technology leadership",
+                    consequences: {
+                        budget: 1000000,
+                        knowledge: 45,
+                        reputation: 50,
+                        time: 35
+                    }
+                }
+            ]
         };
 
-        // Global variables
-        let selectedTopics = new Set();
-        let currentQuestions = [];
-        let currentQuestion = 0;
-        let selectedAnswers = [];
-        let quizCompleted = false;
-        let showingResults = false;
-        let quizStartTime = null;
-        let questionStartTime = null;
-        let questionTimes = [];
-
-        // Initialize the application
-        function initApp() {
-            populateTopics();
-            updateAvailableQuestions();
+        function selectDifficulty(difficulty) {
+            selectedDifficulty = difficulty;
+            document.querySelectorAll('.difficulty-card').forEach(card => card.classList.remove('selected'));
+            event.target.closest('.difficulty-card').classList.add('selected');
+            
+            // Update stats based on difficulty
+            updateStatsForDifficulty(difficulty);
+            updateLaunchButton();
         }
 
-        function populateTopics() {
-            const topicsGrid = document.getElementById('topicsGrid');
-            topicsGrid.innerHTML = '';
-
-            Object.keys(questionDatabase).forEach(topicKey => {
-                const topic = questionDatabase[topicKey];
-                const topicCard = document.createElement('div');
-                topicCard.className = 'topic-card';
-                topicCard.onclick = () => toggleTopic(topicKey);
-                
-                topicCard.innerHTML = `
-                    <div class="topic-count">${topic.questions.length}</div>
-                    <div class="topic-title">${topic.title}</div>
-                    <div class="topic-description">${topic.description}</div>
-                `;
-                
-                topicsGrid.appendChild(topicCard);
-            });
-
-            // Select all topics by default
-            selectAllTopics();
+        function selectLength(length) {
+            selectedLength = length;
+            document.querySelectorAll('.length-option').forEach(option => option.classList.remove('selected'));
+            event.target.closest('.length-option').classList.add('selected');
+            updateLaunchButton();
         }
 
-        function toggleTopic(topicKey) {
-            const topicCard = event.currentTarget;
+        function updateStatsForDifficulty(difficulty) {
+            const stats = {
+                development_associate: { knowledge: 100, budget: 30000000, reputation: 50, timePressure: 15 },
+                regulatory_scientist: { knowledge: 100, budget: 25000000, reputation: 75, timePressure: 25 },
+                regulatory_authority: { knowledge: 100, budget: 20000000, reputation: 90, timePressure: 40 }
+            };
             
-            if (selectedTopics.has(topicKey)) {
-                selectedTopics.delete(topicKey);
-                topicCard.classList.remove('selected');
-            } else {
-                selectedTopics.add(topicKey);
-                topicCard.classList.add('selected');
-            }
-            
-            updateAvailableQuestions();
+            gameStats = { ...stats[difficulty] };
+            updateStatsDisplay();
         }
 
-        function selectAllTopics() {
-            selectedTopics.clear();
-            Object.keys(questionDatabase).forEach(topicKey => {
-                selectedTopics.add(topicKey);
-            });
+        function updateStatsDisplay() {
+            document.getElementById('knowledgeValue').textContent = gameStats.knowledge;
+            document.getElementById('budgetValue').textContent = `$${(gameStats.budget / 1000000).toFixed(0)}M`;
+            document.getElementById('knowledgeFill').style.width = `${gameStats.knowledge}%`;
+            document.getElementById('budgetFill').style.width = `${Math.max(0, gameStats.budget / 30000000 * 100)}%`;
             
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.add('selected');
-            });
+            // Reputation display
+            const repNames = { 0: 'Unknown', 25: 'Junior', 50: 'Trusted', 75: 'Expert', 90: 'Authority', 100: 'Legend' };
+            const repLevel = Object.keys(repNames).reverse().find(level => gameStats.reputation >= level);
+            document.getElementById('reputationValue').textContent = repNames[repLevel];
+            document.getElementById('reputationFill').style.width = `${gameStats.reputation}%`;
             
-            updateAvailableQuestions();
+            // Time pressure
+            const timeNames = { 0: 'Relaxed', 25: 'Moderate', 50: 'Urgent', 75: 'High', 90: 'Critical' };
+            const timeLevel = Object.keys(timeNames).reverse().find(level => gameStats.timePressure >= level);
+            document.getElementById('timeValue').textContent = timeNames[timeLevel];
+            document.getElementById('timeFill').style.width = `${gameStats.timePressure}%`;
         }
 
-        function clearAllTopics() {
-            selectedTopics.clear();
-            
-            document.querySelectorAll('.topic-card').forEach(card => {
-                card.classList.remove('selected');
-            });
-            
-            updateAvailableQuestions();
+        function updateLaunchButton() {
+            const btn = document.getElementById('launchMissionBtn');
+            btn.disabled = !(selectedDifficulty && selectedLength);
         }
 
-        function updateAvailableQuestions() {
-            let totalQuestions = 0;
-            selectedTopics.forEach(topicKey => {
-                totalQuestions += questionDatabase[topicKey].questions.length;
-            });
+        function launchMission() {
+            const pool = scenarioPools[selectedDifficulty];
+            currentScenarios = shuffleArray([...pool]).slice(0, Math.min(selectedLength, pool.length));
+            playerChoices = new Array(currentScenarios.length).fill(null);
             
-            document.getElementById('availableQuestions').textContent = 
-                `Available: ${totalQuestions} questions`;
+            // Hide setup, show game
+            document.getElementById('missionSetup').classList.add('hidden');
+            document.getElementById('playerStats').classList.remove('hidden');
+            document.getElementById('gameProgress').classList.remove('hidden');
+            document.getElementById('scenarioContainer').classList.remove('hidden');
             
-            const questionCountInput = document.getElementById('questionCount');
-            const currentCount = parseInt(questionCountInput.value);
+            // Initialize game state
+            missionActive = true;
+            currentScenario = 0;
+            missionStartTime = Date.now();
             
-            if (currentCount > totalQuestions) {
-                questionCountInput.value = totalQuestions;
-            }
+            const difficultyNames = {
+                development_associate: 'Development Associate',
+                regulatory_scientist: 'Regulatory Scientist', 
+                regulatory_authority: 'Regulatory Authority'
+            };
+            document.getElementById('difficultyDisplay').textContent = difficultyNames[selectedDifficulty] + ' Level';
             
-            questionCountInput.max = totalQuestions;
-        }
-
-        function adjustQuestionCount(delta) {
-            const input = document.getElementById('questionCount');
-            const currentValue = parseInt(input.value);
-            const newValue = Math.max(5, Math.min(parseInt(input.max), currentValue + delta));
-            input.value = newValue;
-        }
-
-        function startQuiz() {
-            if (selectedTopics.size === 0) {
-                alert('Please select at least one topic.');
-                return;
-            }
-
-            const questionCount = parseInt(document.getElementById('questionCount').value);
-            
-            // Gather all questions from selected topics
-            let allQuestions = [];
-            selectedTopics.forEach(topicKey => {
-                const topic = questionDatabase[topicKey];
-                topic.questions.forEach(question => {
-                    allQuestions.push({
-                        ...question,
-                        topic: topicKey,
-                        topicTitle: topic.title
-                    });
-                });
-            });
-
-            // Shuffle and select questions
-            currentQuestions = shuffleArray(allQuestions).slice(0, questionCount);
-            selectedAnswers = new Array(currentQuestions.length).fill(null);
-            questionTimes = new Array(currentQuestions.length).fill(0);
-            
-            currentQuestion = 0;
-            quizCompleted = false;
-            showingResults = false;
-            quizStartTime = Date.now();
-            
-            // Hide setup, show quiz
-            document.getElementById('setupContainer').classList.add('hidden');
-            document.getElementById('progressContainer').classList.remove('hidden');
-            document.getElementById('questionContainer').classList.remove('hidden');
-            
-            displayQuestion();
+            displayScenario();
             updateProgress();
-            questionStartTime = Date.now();
         }
 
         function shuffleArray(array) {
-            const shuffled = [...array];
-            for (let i = shuffled.length - 1; i > 0; i--) {
+            for (let i = array.length - 1; i > 0; i--) {
                 const j = Math.floor(Math.random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+                [array[i], array[j]] = [array[j], array[i]];
             }
-            return shuffled;
+            return array;
         }
 
-        function displayQuestion() {
-            const question = currentQuestions[currentQuestion];
+        function displayScenario() {
+            const scenario = currentScenarios[currentScenario];
             
-            document.getElementById('questionNumber').textContent = `Question ${currentQuestion + 1}`;
-            document.getElementById('topicBadge').textContent = question.topicTitle;
-            document.getElementById('questionText').textContent = question.question;
+            // Update header
+            document.getElementById('scenarioBadge').textContent = `Regulatory Challenge #${currentScenario + 1}`;
+            document.getElementById('riskLevel').textContent = scenario.risk + ' Risk';
             
-            const optionsContainer = document.getElementById('optionsContainer');
+            // Set content
+            document.getElementById('storyContext').textContent = scenario.context;
+            document.getElementById('researchChallenge').textContent = scenario.challenge;
+            
+            // Build options
+            const optionsContainer = document.getElementById('decisionOptions');
             optionsContainer.innerHTML = '';
             
-            question.options.forEach((option, index) => {
+            scenario.options.forEach((option, index) => {
                 const optionDiv = document.createElement('div');
-                optionDiv.className = 'option';
-                optionDiv.onclick = () => selectOption(index);
+                optionDiv.className = 'decision-option';
+                optionDiv.onclick = () => makeDecision(index);
                 
                 const letter = String.fromCharCode(65 + index);
                 optionDiv.innerHTML = `
-                    <div class="option-letter">${letter}</div>
-                    <div>${option}</div>
+                    <div class="option-header">
+                        <div class="option-letter">${letter}</div>
+                        <div>${option}</div>
+                    </div>
                 `;
                 
-                if (selectedAnswers[currentQuestion] === index) {
+                if (playerChoices[currentScenario] === index) {
                     optionDiv.classList.add('selected');
                 }
                 
-                if (quizCompleted) {
-                    if (index === question.correct) {
+                if (missionCompleted) {
+                    if (index === scenario.correct) {
                         optionDiv.classList.add('correct');
-                    } else if (selectedAnswers[currentQuestion] === index) {
+                    } else if (playerChoices[currentScenario] === index) {
                         optionDiv.classList.add('incorrect');
                     }
                     optionDiv.onclick = null;
@@ -1213,197 +1357,205 @@
                 optionsContainer.appendChild(optionDiv);
             });
             
-            updateNavigationButtons();
+            updateMissionControls();
             
-            if (quizCompleted) {
-                showExplanation();
+            if (missionCompleted) {
+                showAnalysis();
             } else {
-                hideExplanation();
+                hideAnalysis();
             }
         }
 
-        function selectOption(index) {
-            if (quizCompleted) return;
+        function makeDecision(index) {
+            if (missionCompleted) return;
             
-            // Record time spent on this question
-            if (questionStartTime && selectedAnswers[currentQuestion] === null) {
-                questionTimes[currentQuestion] = Date.now() - questionStartTime;
+            playerChoices[currentScenario] = index;
+            const scenario = currentScenarios[currentScenario];
+            
+            // Apply consequences immediately
+            if (scenario.consequences) {
+                gameStats.budget += scenario.consequences.budget;
+                gameStats.knowledge += scenario.consequences.knowledge;
+                gameStats.reputation += scenario.consequences.reputation;
+                gameStats.timePressure += scenario.consequences.time;
+                
+                // Clamp values
+                gameStats.knowledge = Math.max(0, Math.min(100, gameStats.knowledge));
+                gameStats.reputation = Math.max(0, Math.min(100, gameStats.reputation));
+                gameStats.timePressure = Math.max(0, Math.min(100, gameStats.timePressure));
+                
+                updateStatsDisplay();
             }
             
-            selectedAnswers[currentQuestion] = index;
-            displayQuestion();
+            displayScenario();
         }
 
         function updateProgress() {
-            const progress = ((currentQuestion + 1) / currentQuestions.length) * 100;
+            const progress = ((currentScenario + 1) / currentScenarios.length) * 100;
             document.getElementById('progressFill').style.width = progress + '%';
-            document.getElementById('progressText').textContent = 
-                `Question ${currentQuestion + 1} of ${currentQuestions.length}`;
+            document.getElementById('missionInfo').textContent = 
+                `Challenge ${currentScenario + 1} of ${currentScenarios.length}`;
         }
 
-        function updateNavigationButtons() {
-            const prevBtn = document.getElementById('prevBtn');
-            const nextBtn = document.getElementById('nextBtn');
-            const submitBtn = document.getElementById('submitBtn');
+        function updateMissionControls() {
+            const prevBtn = document.getElementById('prevMissionBtn');
+            const nextBtn = document.getElementById('nextMissionBtn');
+            const completeBtn = document.getElementById('completeMissionBtn');
             
-            prevBtn.disabled = currentQuestion === 0;
+            prevBtn.disabled = currentScenario === 0;
             
-            if (currentQuestion === currentQuestions.length - 1) {
+            if (currentScenario === currentScenarios.length - 1) {
                 nextBtn.classList.add('hidden');
-                submitBtn.classList.remove('hidden');
-                submitBtn.disabled = selectedAnswers[currentQuestion] === null && !quizCompleted;
+                completeBtn.classList.remove('hidden');
+                completeBtn.disabled = playerChoices[currentScenario] === null && !missionCompleted;
             } else {
                 nextBtn.classList.remove('hidden');
-                submitBtn.classList.add('hidden');
-                nextBtn.disabled = selectedAnswers[currentQuestion] === null && !quizCompleted;
+                completeBtn.classList.add('hidden');
+                nextBtn.disabled = playerChoices[currentScenario] === null && !missionCompleted;
             }
         }
 
-        function nextQuestion() {
-            if (questionStartTime && selectedAnswers[currentQuestion] !== null) {
-                questionTimes[currentQuestion] = Date.now() - questionStartTime;
-            }
-            
-            if (currentQuestion < currentQuestions.length - 1) {
-                currentQuestion++;
-                displayQuestion();
+        function nextScenario() {
+            if (currentScenario < currentScenarios.length - 1) {
+                currentScenario++;
+                displayScenario();
                 updateProgress();
-                questionStartTime = Date.now();
             }
         }
 
-        function previousQuestion() {
-            if (currentQuestion > 0) {
-                currentQuestion--;
-                displayQuestion();
+        function previousScenario() {
+            if (currentScenario > 0) {
+                currentScenario--;
+                displayScenario();
                 updateProgress();
-                questionStartTime = Date.now();
             }
         }
 
-        function submitQuiz() {
-            if (questionStartTime && selectedAnswers[currentQuestion] !== null) {
-                questionTimes[currentQuestion] = Date.now() - questionStartTime;
-            }
-            
-            quizCompleted = true;
-            showResults();
+        function completeMission() {
+            missionCompleted = true;
+            showMissionResults();
         }
 
-        function showResults() {
-            document.getElementById('progressContainer').classList.add('hidden');
-            document.getElementById('questionContainer').classList.add('hidden');
+        function showMissionResults() {
+            document.getElementById('gameProgress').classList.add('hidden');
+            document.getElementById('scenarioContainer').classList.add('hidden');
+            document.getElementById('playerStats').classList.add('hidden');
             
-            const resultsContainer = document.getElementById('resultsContainer');
+            const resultsContainer = document.getElementById('missionResults');
             resultsContainer.classList.remove('hidden');
             
-            const correctAnswers = selectedAnswers.reduce((count, answer, index) => {
-                return count + (answer === currentQuestions[index].correct ? 1 : 0);
+            const correctAnswers = playerChoices.reduce((count, choice, index) => {
+                return count + (choice === currentScenarios[index].correct ? 1 : 0);
             }, 0);
             
-            const percentage = Math.round((correctAnswers / currentQuestions.length) * 100);
+            const accuracy = Math.round((correctAnswers / currentScenarios.length) * 100);
+            const missionTime = Math.round((Date.now() - missionStartTime) / 1000);
             
-            // Calculate average time
-            const validTimes = questionTimes.filter(time => time > 0);
-            const avgTime = validTimes.length > 0 ? 
-                Math.round(validTimes.reduce((a, b) => a + b, 0) / validTimes.length / 1000) : 0;
+            document.getElementById('finalScore').textContent = `${correctAnswers}/${currentScenarios.length}`;
             
-            document.getElementById('scoreDisplay').textContent = `${correctAnswers}/${currentQuestions.length}`;
-            document.getElementById('correctCount').textContent = correctAnswers;
-            document.getElementById('totalCount').textContent = currentQuestions.length;
-            document.getElementById('percentage').textContent = `${percentage}%`;
-            document.getElementById('averageTime').textContent = `${avgTime}s`;
+            // Outcome message based on difficulty and performance
+            let outcome = '';
+            const difficultyMultiplier = { development_associate: 1, regulatory_scientist: 1.2, regulatory_authority: 1.5 }[selectedDifficulty];
+            const finalScore = Math.round(accuracy * difficultyMultiplier);
             
-            // Calculate performance by topic
-            const topicPerformance = {};
-            currentQuestions.forEach((question, index) => {
-                const topic = question.topicTitle;
-                if (!topicPerformance[topic]) {
-                    topicPerformance[topic] = { correct: 0, total: 0 };
-                }
-                topicPerformance[topic].total++;
-                if (selectedAnswers[index] === question.correct) {
-                    topicPerformance[topic].correct++;
-                }
-            });
-            
-            const topicScores = document.getElementById('topicScores');
-            topicScores.innerHTML = '';
-            
-            Object.keys(topicPerformance).forEach(topic => {
-                const perf = topicPerformance[topic];
-                const topicPercent = Math.round((perf.correct / perf.total) * 100);
-                
-                const topicScore = document.createElement('div');
-                topicScore.className = 'topic-score';
-                topicScore.innerHTML = `
-                    <span>${topic}</span>
-                    <span>${perf.correct}/${perf.total} (${topicPercent}%)</span>
-                `;
-                topicScores.appendChild(topicScore);
-            });
-            
-            let message = '';
-            if (percentage >= 90) {
-                message = 'Outstanding! You have exceptional knowledge of PBPK modeling concepts.';
-            } else if (percentage >= 80) {
-                message = 'Excellent work! You have a strong understanding of PBPK modeling.';
-            } else if (percentage >= 70) {
-                message = 'Good performance! Consider reviewing some areas for improvement.';
-            } else if (percentage >= 60) {
-                message = 'Fair performance. Additional study is recommended.';
+            if (selectedDifficulty === 'regulatory_authority') {
+                if (accuracy >= 90) outcome = '⚖️ REGULATORY AUTHORITY ACHIEVED! You now shape industry standards!';
+                else if (accuracy >= 75) outcome = '🏛️ Outstanding regulatory leadership! FDA/EMA notice your expertise.';
+                else if (accuracy >= 60) outcome = '📋 Solid regulatory foundation, but authority requires mastery.';
+                else outcome = '📚 Regulatory authority demands deeper understanding.';
+            } else if (selectedDifficulty === 'regulatory_scientist') {
+                if (accuracy >= 85) outcome = '🎯 Excellent! You\'re ready for senior regulatory leadership.';
+                else if (accuracy >= 70) outcome = '✅ Good regulatory performance! Continue building expertise.';
+                else outcome = '📖 Review regulatory guidelines and best practices.';
             } else {
-                message = 'Consider reviewing fundamental concepts and retaking the quiz.';
+                if (accuracy >= 80) outcome = '🌟 Great start to your regulatory career at The MIDDler!';
+                else if (accuracy >= 65) outcome = '🤖 Solid AI-PBPK foundation! Keep learning.';
+                else outcome = '📚 Study the regulatory fundamentals and AI-PBPK basics.';
             }
             
-            document.getElementById('scoreMessage').textContent = message;
-            showingResults = true;
+            document.getElementById('missionOutcome').textContent = outcome;
+            
+            // Update achievements
+            updateAchievements(accuracy, missionTime);
         }
 
-        function restartQuiz() {
-            // Reset everything and go back to setup
-            selectedTopics.clear();
-            currentQuestions = [];
-            selectedAnswers = [];
-            questionTimes = [];
-            currentQuestion = 0;
-            quizCompleted = false;
-            showingResults = false;
+        function updateAchievements(accuracy, missionTime) {
+            const achievements = {
+                accuracyAchievement: accuracy >= 80,
+                speedAchievement: missionTime < (selectedLength * 60), // Under 1 min per question
+                perfectionAchievement: accuracy === 100,
+                riskTakerAchievement: selectedDifficulty === 'regulatory_authority' && accuracy >= 75
+            };
             
-            document.getElementById('setupContainer').classList.remove('hidden');
-            document.getElementById('progressContainer').classList.add('hidden');
-            document.getElementById('questionContainer').classList.add('hidden');
-            document.getElementById('resultsContainer').classList.add('hidden');
-            
-            initApp();
+            Object.entries(achievements).forEach(([id, unlocked]) => {
+                const element = document.getElementById(id);
+                if (unlocked) {
+                    element.classList.add('unlocked');
+                }
+            });
         }
 
-        function reviewAnswers() {
-            showingResults = false;
-            currentQuestion = 0;
+        function newMission() {
+            // Reset all game state
+            selectedDifficulty = '';
+            selectedLength = 0;
+            currentScenarios = [];
+            currentScenario = 0;
+            playerChoices = [];
+            missionActive = false;
+            missionCompleted = false;
             
-            document.getElementById('progressContainer').classList.remove('hidden');
-            document.getElementById('questionContainer').classList.remove('hidden');
-            document.getElementById('resultsContainer').classList.add('hidden');
+            // Reset UI
+            document.querySelectorAll('.difficulty-card').forEach(card => card.classList.remove('selected'));
+            document.querySelectorAll('.length-option').forEach(option => option.classList.remove('selected'));
+            document.querySelectorAll('.achievement-card').forEach(card => card.classList.remove('unlocked'));
             
-            displayQuestion();
+            // Show setup, hide others
+            document.getElementById('missionSetup').classList.remove('hidden');
+            document.getElementById('playerStats').classList.add('hidden');
+            document.getElementById('gameProgress').classList.add('hidden');
+            document.getElementById('scenarioContainer').classList.add('hidden');
+            document.getElementById('missionResults').classList.add('hidden');
+            
+            updateLaunchButton();
+        }
+
+        function reviewScenarios() {
+            currentScenario = 0;
+            
+            document.getElementById('gameProgress').classList.remove('hidden');
+            document.getElementById('scenarioContainer').classList.remove('hidden');
+            document.getElementById('playerStats').classList.remove('hidden');
+            document.getElementById('missionResults').classList.add('hidden');
+            
+            displayScenario();
             updateProgress();
         }
 
-        function showExplanation() {
-            const explanation = document.getElementById('explanation');
-            const explanationText = document.getElementById('explanationText');
+        function showAnalysis() {
+            const analysis = document.getElementById('consequenceAnalysis');
+            const analysisText = document.getElementById('analysisText');
+            const impactSummary = document.getElementById('impactSummary');
             
-            explanation.classList.remove('hidden');
-            explanationText.textContent = currentQuestions[currentQuestion].explanation;
+            analysis.classList.remove('hidden');
+            analysisText.textContent = currentScenarios[currentScenario].analysis;
+            
+            if (currentScenarios[currentScenario].impact) {
+                impactSummary.textContent = currentScenarios[currentScenario].impact;
+                impactSummary.classList.remove('hidden');
+            } else {
+                impactSummary.classList.add('hidden');
+            }
         }
 
-        function hideExplanation() {
-            document.getElementById('explanation').classList.add('hidden');
+        function hideAnalysis() {
+            document.getElementById('consequenceAnalysis').classList.add('hidden');
         }
 
-        // Initialize the application when the page loads
-        document.addEventListener('DOMContentLoaded', initApp);
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            updateLaunchButton();
+        });
     </script>
 </body>
 </html>
